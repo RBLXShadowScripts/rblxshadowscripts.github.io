@@ -1,1 +1,1354 @@
 
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Shadow Scripts</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <!-- Google Fonts for modern look -->
+    <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;700&family=Montserrat:wght@700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --main-bg: #0a0911;
+            --card-bg: #16141e;
+            --accent: #a259f7;
+            --accent2: #7c3aed;
+            --accent3: #c084fc;
+            --accent4: #ff5c8d;
+            --text: #ece6fa;
+            --text-muted: #a89cc8;
+            --nav-bg: #181622;
+            --nav-active: #a259f7;
+            --btn-bg: #a259f7;
+            --btn-hover: #7c3aed;
+            --modal-bg: rgba(10,8,18,0.98);
+            --shadow: 0 8px 32px #000a;
+            --footer-bg: #181622;
+            --success: #7ee787;
+            --danger: #ff5c8d;
+            --thanks-bg: #181024;
+            --glass: rgba(40, 20, 60, 0.55);
+        }
+html, body {
+    height: 100%;
+    min-height: 100vh;
+    overflow: hidden; /* Prevent scrolling */
+}
+body {
+    background: var(--main-bg);
+    color: var(--text);
+    font-family: 'Montserrat', 'Segoe UI', Arial, sans-serif;
+    margin: 0;
+    padding: 0;
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    perspective: 1200px;
+    overflow: hidden; /* Prevent scrolling */
+}
+        #page-content {
+            flex: 1 0 auto;
+            display: flex;
+            flex-direction: column;
+        }
+        /* Animated BG + 3D effect */
+        body::before {
+            content: "";
+            position: fixed;
+            z-index: 0;
+            inset: 0;
+            background: radial-gradient(ellipse at 60% 10%, #7c3aed44 0%, transparent 70%),
+                        radial-gradient(ellipse at 20% 80%, #a259f744 0%, transparent 70%),
+                        radial-gradient(ellipse at 90% 70%, #ff5c8d33 0%, transparent 80%);
+            pointer-events: none;
+            animation: bgMove 18s infinite alternate;
+            filter: blur(2px) brightness(1.1);
+        }
+        @keyframes bgMove {
+            0% { background-position: 60% 10%, 20% 80%, 90% 70%; }
+            100% { background-position: 65% 15%, 25% 85%, 85% 65%; }
+        }
+        /* Splash Screen */
+        #splash {
+            position: fixed;
+            z-index: 9999;
+            inset: 0;
+            background: linear-gradient(135deg, #1a1023 0%, #7c3aed 100%);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-direction: column;
+            transition: opacity 0.7s cubic-bezier(.68,-0.55,.27,1.55);
+            opacity: 1;
+            pointer-events: all;
+        }
+        #splash.splash-fade {
+            opacity: 0;
+            pointer-events: none;
+        }
+        #splash-logo {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 3.2em;
+            color: var(--accent);
+            letter-spacing: 4px;
+            opacity: 0;
+            animation: splashLogoIn 1.2s 0.2s forwards;
+            text-shadow: 0 4px 32px #7c3aed88;
+            transform: rotateY(-20deg) scale(1.1);
+        }
+        #splash-sub {
+            color: var(--text-muted);
+            font-size: 1.2em;
+            margin-top: 18px;
+            opacity: 0;
+            animation: splashSubIn 1.2s 0.8s forwards;
+        }
+        @keyframes splashLogoIn {
+            from { opacity: 0; transform: scale(0.8) rotateY(-40deg);}
+            to { opacity: 1; transform: scale(1.1) rotateY(-20deg);}
+        }
+        @keyframes splashSubIn {
+            from { opacity: 0; transform: translateY(30px);}
+            to { opacity: 1; transform: translateY(0);}
+        }
+        @keyframes fadeOutSplash {
+            to { opacity: 0; pointer-events: none; }
+        }
+        /* Navbar */
+        header {
+            background: var(--nav-bg);
+            box-shadow: var(--shadow);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            backdrop-filter: blur(8px);
+        }
+        .navbar {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 32px;
+            z-index: 2;
+            position: relative;
+        }
+        .navbar h1 {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 2.2em;
+            color: var(--accent);
+            letter-spacing: 2px;
+            margin: 0;
+            padding: 22px 0;
+            user-select: none;
+            text-shadow: 0 2px 16px #7c3aed44;
+            transform: rotateY(-8deg);
+        }
+        nav.tabs {
+            display: flex;
+            gap: 10px;
+            align-items: flex-end;
+            position: relative;
+            z-index: 2;
+        }
+        nav.tabs button {
+            background: var(--glass);
+            border: none;
+            color: var(--text-muted);
+            font-size: 1.08em;
+            font-family: 'Montserrat', sans-serif;
+            padding: 18px 22px 14px 22px;
+            cursor: pointer;
+            border-bottom: 3px solid transparent;
+            border-top: none;
+            border-left: none;
+            border-right: none;
+            transition: 
+                color 0.2s, 
+                border-color 0.2s, 
+                background 0.2s, 
+                box-shadow 0.2s, 
+                transform 0.2s,
+                border-radius 0.2s;
+            border-radius: 12px 12px 0 0;
+            outline: none;
+            position: relative;
+            box-shadow: 0 2px 12px #7c3aed22;
+            backdrop-filter: blur(2px);
+            min-width: 120px;
+            margin-bottom: 0;
+            z-index: 1;
+            overflow: visible;
+        }
+        nav.tabs button.active, nav.tabs button:hover {
+            color: var(--nav-active);
+            border-bottom: 3px solid var(--nav-active);
+            background: #22123a;
+            box-shadow: 0 4px 24px #a259f733;
+            transform: translateY(-2px) scale(1.04) rotateY(-4deg);
+            border-radius: 18px 18px 0 0;
+            z-index: 2;
+        }
+        nav.tabs button.active::after {
+            content: none; /* Remove the underline from the button itself */
+        }
+        /* Tab underline animation */
+        .tab-underline {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            height: 5px;
+            background: linear-gradient(90deg, var(--accent2), var(--accent3));
+            border-radius: 2px;
+            transition: all 0.35s cubic-bezier(.68,-0.55,.27,1.55);
+            z-index: 0;
+            pointer-events: none;
+        }
+        /* General styles */
+main {
+    flex: 1 0 auto;
+    display: flex;
+    flex-direction: column;
+    max-width: 1200px;
+    margin: 48px auto 0 auto;
+    padding: 0 18px;
+    width: 100%;
+    z-index: 1;
+    position: relative;
+}
+        .tab-content {
+            display: none;
+            animation: fadeIn 0.7s;
+        }
+        .tab-content.active {
+            display: block;
+        }
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(30px) scale(0.98) rotateY(-8deg);}
+            to { opacity: 1; transform: translateY(0) scale(1) rotateY(0);}
+        }
+        .card {
+            background: var(--card-bg);
+            border-radius: 18px;
+            padding: 40px 36px;
+            margin-bottom: 36px;
+            box-shadow: var(--shadow);
+            animation: fadeInCard 1s;
+            position: relative;
+            overflow: hidden;
+            transform-style: preserve-3d;
+            transition: box-shadow 0.3s, transform 0.3s;
+        }
+        .card:hover {
+            box-shadow: 0 12px 48px #a259f755, 0 2px 24px #7c3aed33;
+            transform: rotateY(-3deg) scale(1.01);
+        }
+        @keyframes fadeInCard {
+            from { opacity: 0; transform: scale(0.96) rotateY(-8deg);}
+            to { opacity: 1; transform: scale(1) rotateY(0);}
+        }
+        h2 {
+            color: var(--accent3);
+            margin-top: 0;
+            font-weight: 700;
+            font-family: 'Montserrat', sans-serif;
+            letter-spacing: 1px;
+            text-shadow: 0 2px 12px #a259f744;
+        }
+        ul {
+            padding-left: 20px;
+        }
+        .btn {
+            display: inline-block;
+            background: linear-gradient(90deg, var(--btn-bg), var(--btn-hover));
+            color: #fff;
+            padding: 14px 32px;
+            border-radius: 8px;
+            text-decoration: none;
+            font-weight: bold;
+            margin-top: 16px;
+            font-size: 1.08em;
+            box-shadow: 0 2px 8px #0003;
+            border: none;
+            transition: background 0.2s, color 0.2s, transform 0.2s, box-shadow 0.2s;
+            font-family: 'Montserrat', sans-serif;
+            filter: drop-shadow(0 2px 8px #7c3aed44);
+        }
+        .btn:hover {
+            background: linear-gradient(90deg, var(--btn-hover), var(--btn-bg));
+            color: #fff;
+            transform: scale(1.06);
+            box-shadow: 0 4px 24px #a259f733;
+        }
+        .btn.copy-btn {
+            background: linear-gradient(90deg, var(--success), var(--accent2));
+            color: #181024;
+            margin-left: 10px;
+            font-size: 0.98em;
+            padding: 10px 18px;
+        }
+        .btn.copy-btn.copied {
+            background: linear-gradient(90deg, var(--accent3), var(--success));
+            color: #fff;
+            animation: copiedPulse 0.7s;
+        }
+        @keyframes copiedPulse {
+            0% { box-shadow: 0 0 0 0 var(--success);}
+            70% { box-shadow: 0 0 0 10px transparent;}
+            100% { box-shadow: 0 0 0 0 transparent;}
+        }
+        .script-list {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 22px;
+        }
+        .script-card {
+            background: #22123a;
+            border-radius: 14px;
+            padding: 26px 20px;
+            flex: 1 1 260px;
+            min-width: 220px;
+            box-shadow: 0 2px 8px #0002;
+            cursor: pointer;
+            transition: transform 0.18s, box-shadow 0.18s;
+            position: relative;
+            overflow: hidden;
+            transform-style: preserve-3d;
+        }
+        .script-card:hover {
+            transform: translateY(-6px) scale(1.03) rotateY(-6deg);
+            box-shadow: 0 8px 32px #7c3aed44;
+            background: linear-gradient(120deg, #22123a 80%, #7c3aed22 100%);
+        }
+        .script-card h3 {
+            color: var(--accent2);
+            margin-top: 0;
+            font-family: 'JetBrains Mono', monospace;
+        }
+        .script-card p {
+            color: var(--text-muted);
+            margin-bottom: 0;
+        }
+        .search-bar {
+            width: 100%;
+            max-width: 350px;
+            margin-bottom: 18px;
+            padding: 12px 16px;
+            border-radius: 8px;
+            border: none;
+            background: #2a1740;
+            color: var(--text);
+            font-size: 1.08em;
+            font-family: 'JetBrains Mono', monospace;
+            box-shadow: 0 2px 8px #0002;
+            outline: none;
+            transition: box-shadow 0.2s;
+        }
+        .search-bar:focus {
+            box-shadow: 0 4px 16px #a259f733;
+        }
+        /* Modal */
+        .modal-bg {
+            display: none;
+            position: fixed;
+            z-index: 10000;
+            inset: 0;
+            background: var(--modal-bg);
+            backdrop-filter: blur(3px);
+            animation: modalFadeIn 0.4s;
+        }
+        .modal-bg.active {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        @keyframes modalFadeIn {
+            from { opacity: 0;}
+            to { opacity: 1;}
+        }
+        .modal {
+            background: #22123a;
+            border-radius: 22px;
+            padding: 44px 38px 32px 38px;
+            min-width: 320px;
+            max-width: 98vw;
+            max-height: 90vh;
+            box-shadow: 0 8px 48px #000a;
+            color: var(--text);
+            font-family: 'JetBrains Mono', monospace;
+            position: relative;
+            animation: modalPopIn 0.5s cubic-bezier(.68,-0.55,.27,1.55);
+            transform-style: preserve-3d;
+        }
+        @keyframes modalPopIn {
+            from { transform: scale(0.8) translateY(40px) rotateY(-12deg); opacity: 0;}
+            to { transform: scale(1) translateY(0) rotateY(0); opacity: 1;}
+        }
+        .modal-close {
+            position: absolute;
+            top: 18px;
+            right: 22px;
+            font-size: 1.6em;
+            color: var(--accent3);
+            background: none;
+            border: none;
+            cursor: pointer;
+            transition: color 0.2s, transform 0.2s;
+        }
+        .modal-close:hover {
+            color: var(--accent);
+            transform: scale(1.2) rotate(8deg);
+        }
+        .modal h2 {
+            margin-top: 0;
+            color: var(--accent2);
+        }
+        .modal pre {
+            background: #181024;
+            color: #fff;
+            padding: 18px 14px;
+            border-radius: 8px;
+            overflow-x: auto;
+            font-size: 0.98em;
+            margin-bottom: 18px;
+            font-family: 'JetBrains Mono', monospace;
+            box-shadow: 0 2px 12px #7c3aed33;
+        }
+        .modal .info-list {
+            list-style: none;
+            padding: 0;
+            margin: 0 0 10px 0;
+        }
+        .modal .info-list li {
+            margin-bottom: 7px;
+            color: var(--text-muted);
+        }
+        .modal .info-list strong {
+            color: var(--accent3);
+        }
+        .modal .copy-status {
+            font-size: 0.98em;
+            margin-left: 12px;
+            color: var(--success);
+            opacity: 0;
+            transition: opacity 0.3s;
+            font-family: 'Montserrat', sans-serif;
+        }
+        .modal .copy-status.visible {
+            opacity: 1;
+        }
+        /* Key System Card */
+        .key-card {
+            background: linear-gradient(120deg, #22123a 80%, #7c3aed22 100%);
+            border-radius: 18px;
+            box-shadow: 0 4px 32px #a259f733;
+            padding: 32px 28px;
+            margin-bottom: 36px;
+            display: flex;
+            flex-direction: column;
+            align-items: flex-start;
+            gap: 18px;
+            transform: rotateY(-4deg) scale(1.01);
+        }
+        .key-card h3 {
+            color: var(--accent3);
+            margin: 0 0 8px 0;
+            font-family: 'JetBrains Mono', monospace;
+        }
+        .key-input-row {
+            display: flex;
+            gap: 10px;
+            align-items: center;
+        }
+        .key-input {
+            padding: 10px 18px;
+            border-radius: 8px;
+            border: none;
+            background: #2a1740;
+            color: var(--text);
+            font-size: 1.08em;
+            font-family: 'JetBrains Mono', monospace;
+            box-shadow: 0 2px 8px #0002;
+            outline: none;
+            transition: box-shadow 0.2s;
+        }
+        .key-input:focus {
+            box-shadow: 0 4px 16px #a259f733;
+        }
+        .key-status {
+            font-size: 1em;
+            margin-left: 10px;
+            color: var(--success);
+            opacity: 0;
+            transition: opacity 0.3s;
+            font-family: 'Montserrat', sans-serif;
+        }
+        .key-status.visible {
+            opacity: 1;
+        }
+        .key-error {
+            color: var(--danger);
+        }
+        /* Footer */
+footer {
+    flex-shrink: 0;
+    background: var(--footer-bg);
+    text-align: center;
+    color: #bda6e7;
+    margin: 0;
+    padding: 28px 0 18px 0;
+    font-size: 1.08em;
+    letter-spacing: 1px;
+    box-shadow: 0 -2px 24px #0004;
+    width: 100%;
+    position: relative;
+}
+        /* Devs/Contact Cards */
+        .dev-list {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 24px;
+            margin-top: 18px;
+        }
+        .dev-card {
+            background: #22123a;
+            border-radius: 14px;
+            padding: 24px 20px;
+            min-width: 220px;
+            flex: 1 1 260px;
+            box-shadow: 0 2px 8px #0002;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            transition: transform 0.18s, box-shadow 0.18s;
+        }
+        .dev-card:hover {
+            transform: translateY(-4px) scale(1.03);
+            box-shadow: 0 8px 32px #a259f744;
+        }
+        .dev-avatar {
+            width: 64px;
+            height: 64px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, var(--accent2), var(--accent3));
+            margin-bottom: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 2.2em;
+            color: #fff;
+            box-shadow: 0 2px 12px #7c3aed44;
+        }
+        .dev-card h4 {
+            margin: 0 0 6px 0;
+            color: var(--accent2);
+            font-family: 'Montserrat', sans-serif;
+        }
+        .dev-card p {
+            color: var(--text-muted);
+            margin: 0 0 8px 0;
+            font-size: 1em;
+        }
+        .dev-socials {
+            display: flex;
+            gap: 10px;
+        }
+        .dev-socials a {
+            color: var(--accent3);
+            font-size: 1.2em;
+            transition: color 0.2s, transform 0.2s;
+        }
+        .dev-socials a:hover {
+            color: var(--accent2);
+            transform: scale(1.15);
+        }
+        /* Special Thanks */
+        .thanks-section {
+            background: var(--thanks-bg);
+            border-radius: 14px;
+            padding: 24px 20px;
+            margin-top: 32px;
+            box-shadow: 0 2px 16px #7c3aed22;
+            animation: fadeInCard 1.2s;
+        }
+        .thanks-section h3 {
+            color: var(--accent4);
+            margin-top: 0;
+            font-family: 'Montserrat', sans-serif;
+            letter-spacing: 1px;
+        }
+        .thanks-list {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 18px;
+            margin-top: 12px;
+        }
+        .thanks-card {
+            background: #22123a;
+            border-radius: 10px;
+            padding: 16px 14px;
+            min-width: 160px;
+            flex: 1 1 180px;
+            box-shadow: 0 2px 8px #0002;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            transition: transform 0.18s, box-shadow 0.18s;
+        }
+        .thanks-card:hover {
+            transform: scale(1.04) rotate(-2deg);
+            box-shadow: 0 8px 32px #ff5c8d44;
+        }
+        .thanks-card .thanks-avatar {
+            font-size: 2em;
+            margin-bottom: 8px;
+            color: var(--accent4);
+        }
+        .thanks-card span {
+            color: var(--accent3);
+            font-weight: bold;
+            font-family: 'JetBrains Mono', monospace;
+        }
+        @media (max-width: 900px) {
+            .navbar { flex-direction: column; align-items: flex-start; padding: 0 8px;}
+            .navbar h1 { font-size: 1.3em; padding: 12px 0; }
+            main { padding: 0 2px; }
+            .card { padding: 16px 6px; }
+            .script-list { flex-direction: column; }
+            .modal { padding: 18px 8px 18px 8px; }
+            .dev-list, .thanks-list { flex-direction: column; }
+            .key-card { padding: 16px 8px; }
+        }
+                .news-container {
+            background: var(--card-bg);
+            border-radius: 16px;
+            box-shadow: 0 2px 16px #0006;
+            margin: 32px 0 0 0;
+            padding: 28px 24px 18px 24px;
+            display: flex;
+            flex-direction: column;
+            gap: 18px;
+            animation: fadeInCard 1s;
+        }
+        .news-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 10px;
+        }
+        .news-header h3 {
+            color: var(--accent2);
+            margin: 0;
+            font-size: 1.3em;
+            font-family: 'Montserrat', sans-serif;
+        }
+        .news-list {
+            display: flex;
+            gap: 18px;
+            flex-wrap: wrap;
+        }
+        .news-card {
+            background: #191526;
+            border-radius: 12px;
+            box-shadow: 0 2px 8px #0004;
+            padding: 18px 16px 14px 16px;
+            min-width: 220px;
+            flex: 1 1 260px;
+            cursor: pointer;
+            transition: box-shadow 0.18s, transform 0.18s;
+            position: relative;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+        }
+        .news-card:hover {
+            box-shadow: 0 8px 32px #7c3aed44;
+            background: linear-gradient(120deg, #191526 80%, #7c3aed22 100%);
+            transform: translateY(-4px) scale(1.03);
+        }
+        .news-title {
+            color: var(--accent3);
+            font-size: 1.1em;
+            font-family: 'JetBrains Mono', monospace;
+            margin-bottom: 6px;
+        }
+        .news-date {
+            color: var(--text-muted);
+            font-size: 0.95em;
+            margin-bottom: 8px;
+        }
+        .news-desc {
+            color: var(--text);
+            font-size: 1em;
+            margin-bottom: 10px;
+        }
+        .news-learn {
+            align-self: flex-end;
+            background: none;
+            border: none;
+            color: var(--accent2);
+            font-size: 0.98em;
+            cursor: pointer;
+            text-decoration: underline;
+            margin-top: 4px;
+            transition: color 0.2s;
+        }
+        .news-learn:hover {
+            color: var(--accent4);
+        }
+        .news-all-btn {
+            background: linear-gradient(90deg, var(--accent2), var(--accent3));
+            color: #fff;
+            border: none;
+            border-radius: 8px;
+            padding: 10px 22px;
+            font-size: 1em;
+            font-family: 'Montserrat', sans-serif;
+            font-weight: bold;
+            cursor: pointer;
+            margin-top: 8px;
+            align-self: flex-end;
+            box-shadow: 0 2px 8px #0003;
+            transition: background 0.2s, color 0.2s, transform 0.2s;
+        }
+        .news-all-btn:hover {
+            background: linear-gradient(90deg, var(--accent3), var(--accent2));
+            color: #fff;
+            transform: scale(1.06);
+        }
+        /* News Modal */
+        .news-modal-bg {
+            display: none;
+            position: fixed;
+            z-index: 10001;
+            inset: 0;
+            background: var(--modal-bg);
+            backdrop-filter: blur(3px);
+            align-items: center;
+            justify-content: center;
+            animation: modalFadeIn 0.4s;
+        }
+        .news-modal-bg.active {
+            display: flex;
+        }
+        .news-modal {
+            background: #191526;
+            border-radius: 18px;
+            padding: 38px 30px 28px 30px;
+            min-width: 320px;
+            max-width: 96vw;
+            max-height: 92vh;
+            box-shadow: 0 8px 48px #000a;
+            color: var(--text);
+            font-family: 'JetBrains Mono', monospace;
+            position: relative;
+            animation: modalPopIn 0.5s cubic-bezier(.68,-0.55,.27,1.55);
+            overflow-y: auto;
+        }
+        .news-modal-close {
+            position: absolute;
+            top: 16px;
+            right: 20px;
+            font-size: 1.5em;
+            color: var(--accent3);
+            background: none;
+            border: none;
+            cursor: pointer;
+            transition: color 0.2s, transform 0.2s;
+        }
+        .news-modal-close:hover {
+            color: var(--accent);
+            transform: scale(1.2) rotate(8deg);
+        }
+        .news-modal h2 {
+            color: var(--accent2);
+            margin-top: 0;
+        }
+        .news-modal .news-date {
+            margin-bottom: 12px;
+        }
+        .news-modal .news-full {
+            color: var(--text);
+            font-size: 1.08em;
+            margin-bottom: 0;
+        }
+        /* All News Modal List */
+        .all-news-list {
+            display: flex;
+            flex-direction: column;
+            gap: 18px;
+            margin-top: 12px;
+        }
+        .all-news-item {
+            background: #22123a;
+            border-radius: 10px;
+            padding: 16px 14px;
+            box-shadow: 0 2px 8px #0002;
+            cursor: pointer;
+            transition: box-shadow 0.18s, transform 0.18s;
+        }
+        .all-news-item:hover {
+            box-shadow: 0 8px 32px #7c3aed44;
+            background: linear-gradient(120deg, #22123a 80%, #7c3aed22 100%);
+            transform: translateY(-2px) scale(1.02);
+        }
+        .all-news-title {
+            color: var(--accent3);
+            font-size: 1.08em;
+            font-family: 'JetBrains Mono', monospace;
+        }
+        .all-news-date {
+            color: var(--text-muted);
+            font-size: 0.95em;
+            margin-bottom: 4px;
+        }
+        .all-news-desc {
+            color: var(--text);
+            font-size: 1em;
+        }
+        /* Contact Revamp */
+        .contact-card {
+            background: var(--card-bg);
+            border-radius: 18px;
+            box-shadow: 0 4px 32px #a259f733;
+            padding: 36px 28px;
+            margin-bottom: 36px;
+            display: flex;
+            flex-direction: column;
+            align-items: flex-start;
+            gap: 18px;
+            animation: fadeInCard 1s;
+        }
+        .contact-methods {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 24px;
+            margin-top: 10px;
+        }
+        .contact-method {
+            background: #191526;
+            border-radius: 10px;
+            padding: 18px 20px;
+            min-width: 220px;
+            flex: 1 1 260px;
+            box-shadow: 0 2px 8px #0002;
+            display: flex;
+            align-items: center;
+            gap: 14px;
+            font-size: 1.1em;
+            color: var(--text);
+            transition: box-shadow 0.18s, transform 0.18s;
+        }
+        .contact-method i {
+            font-size: 1.5em;
+            color: var(--accent2);
+        }
+        .contact-method a {
+            color: var(--accent3);
+            text-decoration: underline;
+            transition: color 0.2s;
+        }
+        .contact-method a:hover {
+            color: var(--accent4);
+        }
+        .contact-desc {
+            color: var(--text-muted);
+            font-size: 1em;
+            margin-top: 8px;
+        }
+        
+    </style>
+   <!-- Font Awesome for social icons -->
+    <script src="https://kit.fontawesome.com/2d3e5c5e5f.js" crossorigin="anonymous"></script>
+</head>
+<body>
+    <!-- Splash Screen -->
+    <div id="splash">
+        <div id="splash-logo">Shadow Scripts</div>
+        <div id="splash-sub">Roblox Scripts</div>
+        <div id="splash-sub">That came from the</div>
+        <div id="splash-sub">Darkness.</div>
+    </div>
+    <div id="page-content">
+        <header>
+            <div class="navbar">
+                <h1>Shadow Scripts</h1>
+                <nav class="tabs">
+                    <button class="active" data-tab="main">Main</button>
+                    <button data-tab="scripts">Scripts</button>
+                    <button data-tab="key">Key System</button>
+                    <button data-tab="devs">Devs</button>
+                    <button data-tab="contact">Contact</button>
+                    <button data-tab="discord">Discord</button>
+                </nav>
+                <div class="socials">
+                    <a href="https://github.com/yourusername/ShadowScripts" target="_blank" title="GitHub"><i class="fab fa-github"></i></a>
+                    <a href="https://discord.gg/74QcHdje" target="_blank" title="Discord"><i class="fab fa-discord"></i></a>
+                    <a href="mailto:shadowscriptsroblox@gmail.com" title="Email"><i class="fas fa-envelope"></i></a>
+                </div>
+            </div>
+        </header>
+        <main>
+            <section id="main" class="tab-content active">
+                <div class="card">
+                    <h2>Main</h2>
+                    <p>
+                        <b>Shadow Scripts</b> is a purplish-themed Roblox scripting group focused on quality, safety, and style.<br>
+                        We provide advanced scripts, modern UIs, and exclusive VIP tools.<br>
+                        <br>
+                        <i>Use responsibly. For educational purposes only.</i>
+                    </p>
+                </div>
+                <div class="news-container">
+                    <div class="news-header">
+                        <h3>Latest News</h3>
+                        <button class="news-all-btn" id="showAllNewsBtn">Display All News</button>
+                    </div>
+                    <div class="news-list" id="newsList">
+                        <!-- News cards will be injected here -->
+                    </div>
+                </div>
+            </section>
+            <section id="scripts" class="tab-content">
+                <div class="card">
+                    <h2>All Scripts</h2>
+                    <input class="search-bar" id="scriptSearch" type="text" placeholder="Search scripts...">
+                    <div class="script-list" id="scriptList">
+                        <div class="script-card" data-name="Piggy Script">
+                            <h3>Piggy Script</h3>
+                            <p>ESP, item grab, VIP server tools, and more for Piggy.</p>
+                        </div>
+                        <!-- Add more script cards here as you make more scripts -->
+                    </div>
+                </div>
+            </section>
+            <section id="key" class="tab-content">
+                <div class="key-card">
+                    <h3><i class="fas fa-key"></i> Grab Your Script Key</h3>
+                    <div class="key-input-row">
+                        <input class="key-input" id="keyInput" type="text" placeholder="Click 'Get Key' to fetch..." readonly>
+                        <button class="btn" id="getKeyBtn"><i class="fas fa-download"></i> Get Key</button>
+                        <button class="btn copy-btn" id="copyKeyBtn"><i class="fas fa-copy"></i>Copy Key</button>
+                        <span class="key-status" id="keyStatus"></span>
+                    </div>
+                    <div style="font-size:0.98em;color:var(--text-muted);margin-top:8px;">
+                        This key is required to use Shadow Scripts. <br>
+                        <span style="color:var(--accent4);">Never share your key with others!</span>
+                    </div>
+                </div>
+            </section>
+            <section id="devs" class="tab-content">
+                <div class="card">
+                    <h2>Developers</h2>
+                    <div class="dev-list">
+                        <div class="dev-card">
+                            <div class="dev-avatar"><i class="fas fa-user-astronaut"></i></div>
+                            <h4>Shadow Slime</h4>
+                            <p>Luau / Lua Scripter</p>
+                            <div class="dev-socials">
+                                <a href="https://github.com/yourusername" target="_blank" title="GitHub"><i class="fab fa-github"></i></a>
+                            </div>
+                        </div>
+                        <div class="dev-card">
+                            <div class="dev-avatar"><i class="fas fa-user-ninja"></i></div>
+                            <h4>Golden Soul</h4>
+                            <p>Luau / Lua Scripter</p>
+                            <div class="dev-socials">
+                                <a href="https://github.com/anotherdev" target="_blank" title="GitHub"><i class="fab fa-github"></i></a>
+                            </div>
+                        </div>
+                    </div>
+                        <!-- Add more devs as needed -->
+                    </div>
+                    <div class="thanks-section">
+                        <h3>Special Thanks</h3>
+                        <div class="thanks-list">
+                            <div class="thanks-card">
+                                <div class="thanks-avatar"><i class="fas fa-gem"></i></div>
+                                <span>Obsidian Library</span>
+                                <div style="font-size:0.95em;color:var(--text-muted);margin-top:4px;">UI Framework</div>
+                            </div>
+                            <div class="thanks-card">
+                                <div class="thanks-avatar"><i class="fas fa-user-secret"></i></div>
+                                <span>GhostDuckyy</span>
+                                <div style="font-size:0.95em;color:var(--text-muted);margin-top:4px;">ESP Library</div>
+                            </div>
+                            <div class="thanks-card">
+                                <div class="thanks-avatar"><i class="fas fa-code"></i></div>
+                                <span>RegularVynixu</span>
+                                <div style="font-size:0.95em;color:var(--text-muted);margin-top:4px;">Discord Inviter</div>
+                            </div>
+                            <!-- Add more thanks as needed -->
+                        </div>
+                    </div>
+                </div>
+            </section>
+            <section id="contact" class="tab-content">
+                <div class="contact-card">
+                    <h2>Contact & Support</h2>
+                    <div class="contact-methods">
+                        <div class="contact-method">
+                            <i class="fab fa-discord"></i>
+                            <div>
+                                <div>Discord</div>
+                                <a href="https://discord.gg/74QcHdje" target="_blank">discord.gg/74QcHdje</a>
+                            </div>
+                        </div>
+                        <div class="contact-method">
+                            <i class="fas fa-envelope"></i>
+                            <div>
+                                <div>Email</div>
+                                <a href="mailto:shadowscriptsroblox@gmail.com">shadowscriptsroblox@gmail.com</a>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="contact-desc">
+                        For business, support, or inquiries, reach out via Discord or email.<br>
+                        We usually respond within 24 hours.<br>
+                        <span style="color:var(--accent4);">Please do not send spam or unrelated requests.</span>
+                    </div>
+                </div>
+            </section>
+            <section id="discord" class="tab-content">
+                <div class="card">
+                    <h2>Join Our Discord</h2>
+                    <p>
+                        Get support, updates, and chat with the Shadow Scripts community!
+                    </p>
+                    <a class="btn" href="https://discord.gg/74QcHdje" target="_blank">Join Discord</a>
+                    <!-- Optionally embed Discord widget below -->
+                    <!--
+                    <iframe class="discord-widget" src="https://discord.com/widget?id=YOUR_SERVER_ID&theme=dark" allowtransparency="true"></iframe>
+                    -->
+                </div>
+            </section>
+        </main>
+    </div>
+    <footer>
+        &copy; 2025 Shadow Scripts. Not affiliated with Roblox Corporation.
+    </footer>
+    <!-- Modal for script info -->
+    <div class="modal-bg" id="scriptModalBg">
+        <div class="modal" id="scriptModal">
+            <button class="modal-close" id="modalCloseBtn" title="Close">&times;</button>
+            <h2 id="modalTitle">Piggy Script</h2>
+            <ul class="info-list">
+                <li><strong>Supported Executors:</strong> Synapse X, Fluxus, KRNL, Electron</li>
+                <li><strong>Last Updated:</strong> June 2025</li>
+                <li><strong>Status:</strong> Working</li>
+            </ul>
+            <pre id="modalScript">// Loading Piggy Script...
+loadstring(game:HttpGet("https://raw.githubusercontent.com/yourusername/ShadowScripts/main/Piggy.lua"))()</pre>
+            <button class="btn copy-btn" id="copyScriptBtn">Copy Script</button>
+            <span class="copy-status" id="copyStatus">Copied!</span>
+            <a class="btn" href="https://github.com/yourusername/ShadowScripts" target="_blank" style="margin-left:10px;">View on GitHub</a>
+        </div>
+    </div>
+    <!-- News Modals -->
+    <div class="news-modal-bg" id="allNewsModalBg">
+        <div class="news-modal" id="allNewsModal">
+            <button class="news-modal-close" id="closeAllNewsModal" title="Close">&times;</button>
+            <h2>All News</h2>
+            <div class="all-news-list" id="allNewsList">
+                <!-- All news items will be injected here -->
+            </div>
+        </div>
+    </div>
+    <div class="news-modal-bg" id="singleNewsModalBg">
+        <div class="news-modal" id="singleNewsModal">
+            <button class="news-modal-close" id="closeSingleNewsModal" title="Close">&times;</button>
+            <h2 id="singleNewsTitle"></h2>
+            <div class="news-date" id="singleNewsDate"></div>
+            <div class="news-full" id="singleNewsFull"></div>
+        </div>
+    </div>
+    <script>
+        // Splash screen logic
+        window.addEventListener('DOMContentLoaded', function() {
+            setTimeout(function() {
+                document.getElementById('splash').classList.add('splash-fade');
+                document.getElementById('splash').addEventListener('transitionend', function handler() {
+                    document.getElementById('splash').style.display = 'none';
+                    document.body.style.overflow = '';
+                    document.getElementById('splash').removeEventListener('transitionend', handler);
+                });
+            }, 2200);
+        });
+
+        // News Data (replace/add as needed)
+    const newsData = [
+        {
+            title: "Piggy 1.0 Script Released",
+            date: "2025-06-13",
+            desc: "The first version of our Piggy script is out now!",
+            full: "Piggy 1.0 Script is now available! Features include ESP, item grab, and VIP server tools. Try it out and let us know your feedback on Discord."
+        },
+        {
+            title: "Website Creation",
+            date: "2025-06-10",
+            desc: "The Shadow Scripts website is now live with a modern black & purple UI.",
+            full: "On June 10, 2025, the Shadow Scripts website officially launched! Enjoy a sleek, modern interface, news system, script hub, and more. Stay tuned for updates and new features."
+        },
+
+        {
+            title: "Join Our Discord",
+            date: "2023-04-03",
+            desc: "Join our Discord for support, updates, and community chat. Or leave it if you want, we won't judge.",
+            full: "Our Discord server is open for everyone who wants support, updates, or just to hang out with the Shadow Scripts community. If you ever want to leave, that's cool too. Invite: discord.gg/74QcHdje"
+        },
+        {
+            title: "Shadow Scripts Was Created",
+            date: "2023-04-02",
+            desc: "Back in 2023, Shadow Scripts was born.",
+            full: "Shadow Scripts was founded in April 2023 by passionate scripters to provide quality, safe, and stylish Roblox scripts. Thank you for being part of our journey!"
+        }
+    ];
+
+        // Render latest 3 news
+        function renderLatestNews() {
+            const newsList = document.getElementById('newsList');
+            newsList.innerHTML = '';
+            newsData.slice(0, 3).forEach((news, idx) => {
+                const card = document.createElement('div');
+                card.className = 'news-card';
+                card.setAttribute('data-news-idx', idx);
+                card.innerHTML = `
+                    <div class="news-title">${news.title}</div>
+                    <div class="news-date">${news.date}</div>
+                    <div class="news-desc">${news.desc}</div>
+                    <button class="news-learn" data-news-idx="${idx}">Learn more</button>
+                `;
+                newsList.appendChild(card);
+            });
+        }
+        renderLatestNews();
+
+        // News modal logic
+        const allNewsModalBg = document.getElementById('allNewsModalBg');
+        const allNewsModal = document.getElementById('allNewsModal');
+        const showAllNewsBtn = document.getElementById('showAllNewsBtn');
+        const closeAllNewsModal = document.getElementById('closeAllNewsModal');
+        const allNewsList = document.getElementById('allNewsList');
+
+        const singleNewsModalBg = document.getElementById('singleNewsModalBg');
+        const singleNewsModal = document.getElementById('singleNewsModal');
+        const closeSingleNewsModal = document.getElementById('closeSingleNewsModal');
+        const singleNewsTitle = document.getElementById('singleNewsTitle');
+        const singleNewsDate = document.getElementById('singleNewsDate');
+        const singleNewsFull = document.getElementById('singleNewsFull');
+
+        // Show all news modal
+        showAllNewsBtn.addEventListener('click', function() {
+            allNewsList.innerHTML = '';
+            newsData.forEach((news, idx) => {
+                const item = document.createElement('div');
+                item.className = 'all-news-item';
+                item.setAttribute('data-news-idx', idx);
+                item.innerHTML = `
+                    <div class="all-news-title">${news.title}</div>
+                    <div class="all-news-date">${news.date}</div>
+                    <div class="all-news-desc">${news.desc}</div>
+                `;
+                allNewsList.appendChild(item);
+            });
+            allNewsModalBg.classList.add('active');
+        });
+        closeAllNewsModal.addEventListener('click', function() {
+            allNewsModalBg.classList.remove('active');
+        });
+        allNewsModalBg.addEventListener('click', function(e) {
+            if (e.target === allNewsModalBg) allNewsModalBg.classList.remove('active');
+        });
+
+        // Show single news modal
+        function showSingleNews(idx) {
+            const news = newsData[idx];
+            singleNewsTitle.textContent = news.title;
+            singleNewsDate.textContent = news.date;
+            singleNewsFull.textContent = news.full;
+            singleNewsModalBg.classList.add('active');
+        }
+        closeSingleNewsModal.addEventListener('click', function() {
+            singleNewsModalBg.classList.remove('active');
+        });
+        singleNewsModalBg.addEventListener('click', function(e) {
+            if (e.target === singleNewsModalBg) singleNewsModalBg.classList.remove('active');
+        });
+
+        // Delegate click for news cards and learn more buttons
+        document.getElementById('newsList').addEventListener('click', function(e) {
+            let idx = null;
+            if (e.target.classList.contains('news-learn')) {
+                idx = e.target.getAttribute('data-news-idx');
+            } else if (e.target.classList.contains('news-card')) {
+                idx = e.target.getAttribute('data-news-idx');
+            } else if (e.target.closest('.news-card')) {
+                idx = e.target.closest('.news-card').getAttribute('data-news-idx');
+            }
+            if (idx !== null) showSingleNews(idx);
+        });
+        // Delegate click for all news modal
+        allNewsList.addEventListener('click', function(e) {
+            let idx = null;
+            if (e.target.classList.contains('all-news-item')) {
+                idx = e.target.getAttribute('data-news-idx');
+            } else if (e.target.closest('.all-news-item')) {
+                idx = e.target.closest('.all-news-item').getAttribute('data-news-idx');
+            }
+            if (idx !== null) {
+                allNewsModalBg.classList.remove('active');
+                setTimeout(() => showSingleNews(idx), 150);
+            }
+        });
+
+        // ...rest of your script (tab system, modal, key system, etc)...
+        // Tab switching logic with animated underline
+        const tabButtons = Array.from(document.querySelectorAll('nav.tabs button'));
+        const tabContents = document.querySelectorAll('.tab-content');
+        const tabsNav = document.querySelector('nav.tabs');
+        let underline = document.createElement('div');
+        underline.className = 'tab-underline';
+        tabsNav.appendChild(underline);
+
+        function moveUnderline(btn) {
+            const rect = btn.getBoundingClientRect();
+            const navRect = tabsNav.getBoundingClientRect();
+            underline.style.width = rect.width + "px";
+            underline.style.left = (rect.left - navRect.left) + "px";
+            underline.style.background = btn.classList.contains('active')
+                ? "linear-gradient(90deg, var(--accent2), var(--accent3))"
+                : "linear-gradient(90deg, var(--accent3), var(--accent2))";
+        }
+        function activateTab(btn) {
+            tabButtons.forEach(b => b.classList.remove('active'));
+            btn.classList.add('active');
+            tabContents.forEach(tab => tab.classList.remove('active'));
+            document.getElementById(btn.getAttribute('data-tab')).classList.add('active');
+            moveUnderline(btn);
+        }
+        tabButtons.forEach(btn => {
+            btn.addEventListener('click', function() {
+                activateTab(btn);
+            });
+            btn.addEventListener('mouseenter', function() {
+                moveUnderline(btn);
+            });
+        });
+        tabsNav.addEventListener('mouseleave', function() {
+            const activeBtn = document.querySelector('nav.tabs button.active');
+            if (activeBtn) moveUnderline(activeBtn);
+        });
+        window.addEventListener('load', () => {
+            const activeBtn = document.querySelector('nav.tabs button.active');
+            if (activeBtn) moveUnderline(activeBtn);
+        });
+
+        // Script search logic
+        document.getElementById('scriptSearch').addEventListener('input', function() {
+            const val = this.value.toLowerCase();
+            document.querySelectorAll('.script-card').forEach(card => {
+                card.style.display = card.getAttribute('data-name').toLowerCase().includes(val) ? '' : 'none';
+            });
+        });
+
+        // Modal logic for scripts
+        const scriptModalBg = document.getElementById('scriptModalBg');
+        const scriptModal = document.getElementById('scriptModal');
+        const modalCloseBtn = document.getElementById('modalCloseBtn');
+        const copyScriptBtn = document.getElementById('copyScriptBtn');
+        const copyStatus = document.getElementById('copyStatus');
+        let currentScript = `// Loading Piggy Script...
+loadstring(game:HttpGet("https://raw.githubusercontent.com/yourusername/ShadowScripts/main/Piggy.lua"))()`;
+
+        document.querySelectorAll('.script-card').forEach(card => {
+            card.addEventListener('click', function() {
+                document.getElementById('modalTitle').innerText = "Piggy Script";
+                document.getElementById('modalScript').innerText = currentScript;
+                scriptModalBg.classList.add('active');
+                setTimeout(() => scriptModal.classList.add('active'), 10);
+            });
+        });
+        modalCloseBtn.addEventListener('click', function() {
+            scriptModal.classList.remove('active');
+            scriptModalBg.classList.remove('active');
+        });
+        scriptModalBg.addEventListener('click', function(e) {
+            if (e.target === scriptModalBg) {
+                scriptModal.classList.remove('active');
+                scriptModalBg.classList.remove('active');
+            }
+        });
+        scriptModalBg.addEventListener('transitionstart', function() {
+            if (scriptModalBg.classList.contains('active')) {
+                document.body.style.overflow = 'hidden';
+            } else {
+                document.body.style.overflow = '';
+            }
+        });
+
+        // Copy script to clipboard
+        copyScriptBtn.addEventListener('click', function() {
+            const scriptText = document.getElementById('modalScript').innerText;
+            navigator.clipboard.writeText(scriptText).then(function() {
+                copyScriptBtn.classList.add('copied');
+                copyStatus.classList.add('visible');
+                setTimeout(() => {
+                    copyScriptBtn.classList.remove('copied');
+                    copyStatus.classList.remove('visible');
+                }, 1200);
+            });
+        });
+
+        // Key system logic
+        const getKeyBtn = document.getElementById('getKeyBtn');
+        const copyKeyBtn = document.getElementById('copyKeyBtn');
+        const keyInput = document.getElementById('keyInput');
+        const keyStatus = document.getElementById('keyStatus');
+        let fetchedKey = "";
+
+        getKeyBtn.addEventListener('click', function() {
+            keyStatus.classList.remove('visible', 'key-error');
+            keyStatus.innerText = "";
+            keyInput.value = "Fetching...";
+            fetch('https://raw.githubusercontent.com/RBLXShadowScripts/ShadowScripts.github.io/refs/heads/main/System/Key.txt')
+                .then(res => res.text())
+                .then(txt => {
+                    fetchedKey = txt.trim();
+                    keyInput.value = fetchedKey;
+                    keyStatus.innerText = "Key grabbed!";
+                    keyStatus.classList.add('visible');
+                    keyStatus.classList.remove('key-error');
+                })
+                .catch(() => {
+                    keyInput.value = "";
+                    keyStatus.innerText = "Failed to fetch key!";
+                    keyStatus.classList.add('visible', 'key-error');
+                });
+        });
+        copyKeyBtn.addEventListener('click', function() {
+            if (keyInput.value && keyInput.value !== "Fetching...") {
+                navigator.clipboard.writeText(keyInput.value).then(function() {
+                    keyStatus.innerText = "Copied!";
+                    keyStatus.classList.add('visible');
+                    keyStatus.classList.remove('key-error');
+                    setTimeout(() => keyStatus.classList.remove('visible'), 1200);
+                });
+            }
+        });
+
+        function activateTabByHash() {
+            const hash = window.location.hash.replace('#', '');
+            const btn = tabButtons.find(b => b.getAttribute('data-tab') === hash);
+            if (btn) activateTab(btn);
+        }
+        window.addEventListener('hashchange', activateTabByHash);
+        window.addEventListener('DOMContentLoaded', activateTabByHash);
+
+        tabButtons.forEach(btn => {
+            btn.addEventListener('click', function() {
+                window.location.hash = btn.getAttribute('data-tab');
+            });
+        });
+    </script>
+</body>
+</html>
