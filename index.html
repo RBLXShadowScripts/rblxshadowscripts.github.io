@@ -1,11 +1,11 @@
-
 <!DOCTYPE html>
 <html lang="en">
+    
 <head>
     <meta charset="UTF-8">
     <title>Shadow Scripts</title>
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <!-- Google Fonts for modern look -->
+    
     <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;700&family=Montserrat:wght@700&display=swap" rel="stylesheet">
     <style>
         :root {
@@ -19,20 +19,25 @@
             --text-muted: #a89cc8;
             --nav-bg: #181622;
             --nav-active: #a259f7;
-            --btn-bg: #a259f7;
-            --btn-hover: #7c3aed;
-            --modal-bg: rgba(10,8,18,0.98);
+            --btn-bg: #232136;
+            --btn-hover: #7ee787;
+            --code-green: #7ee787;
+            --code-blue: #82aaff;
+            --code-cursor: #7ee787;
             --shadow: 0 8px 32px #000a;
             --footer-bg: #181622;
-            --success: #7ee787;
-            --danger: #ff5c8d;
             --thanks-bg: #181024;
             --glass: rgba(40, 20, 60, 0.55);
         }
 html, body {
     height: 100%;
     min-height: 100vh;
-    overflow: hidden; /* Prevent scrolling */
+    margin: 0;
+    padding: 0;
+    background: var(--main-bg);
+    color: var(--text);
+    font-family: 'Montserrat', 'Segoe UI', Arial, sans-serif;
+    overflow: hidden; 
 }
 body {
     background: var(--main-bg);
@@ -44,22 +49,26 @@ body {
     display: flex;
     flex-direction: column;
     perspective: 1200px;
-    overflow: hidden; /* Prevent scrolling */
+    overflow: hidden; 
+    height: 100vh;
 }
-        #page-content {
-            flex: 1 0 auto;
-            display: flex;
-            flex-direction: column;
-        }
-        /* Animated BG + 3D effect */
+#page-content {
+    display: flex;
+    flex-direction: column;
+    flex: 1 0 auto;
+    min-height: 0; 
+}
+        
         body::before {
             content: "";
             position: fixed;
             z-index: 0;
             inset: 0;
-            background: radial-gradient(ellipse at 60% 10%, #7c3aed44 0%, transparent 70%),
-                        radial-gradient(ellipse at 20% 80%, #a259f744 0%, transparent 70%),
-                        radial-gradient(ellipse at 90% 70%, #ff5c8d33 0%, transparent 80%);
+            background: 
+                repeating-linear-gradient(0deg, #23213622 0 1px, transparent 1px 32px),
+                repeating-linear-gradient(90deg, #23213622 0 1px, transparent 1px 32px),
+                radial-gradient(ellipse at 60% 10%, #7c3aed22 0%, transparent 70%),
+                radial-gradient(ellipse at 20% 80%, #a259f722 0%, transparent 70%);
             pointer-events: none;
             animation: bgMove 18s infinite alternate;
             filter: blur(2px) brightness(1.1);
@@ -68,61 +77,89 @@ body {
             0% { background-position: 60% 10%, 20% 80%, 90% 70%; }
             100% { background-position: 65% 15%, 25% 85%, 85% 65%; }
         }
-        /* Splash Screen */
-        #splash {
-            position: fixed;
-            z-index: 9999;
-            inset: 0;
-            background: linear-gradient(135deg, #1a1023 0%, #7c3aed 100%);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            flex-direction: column;
-            transition: opacity 0.7s cubic-bezier(.68,-0.55,.27,1.55);
-            opacity: 1;
-            pointer-events: all;
-        }
-        #splash.splash-fade {
-            opacity: 0;
-            pointer-events: none;
-        }
-        #splash-logo {
-            font-family: 'JetBrains Mono', monospace;
-            font-size: 3.2em;
-            color: var(--accent);
-            letter-spacing: 4px;
-            opacity: 0;
-            animation: splashLogoIn 1.2s 0.2s forwards;
-            text-shadow: 0 4px 32px #7c3aed88;
-            transform: rotateY(-20deg) scale(1.1);
-        }
-        #splash-sub {
-            color: var(--text-muted);
-            font-size: 1.2em;
-            margin-top: 18px;
-            opacity: 0;
-            animation: splashSubIn 1.2s 0.8s forwards;
-        }
-        @keyframes splashLogoIn {
-            from { opacity: 0; transform: scale(0.8) rotateY(-40deg);}
-            to { opacity: 1; transform: scale(1.1) rotateY(-20deg);}
-        }
-        @keyframes splashSubIn {
-            from { opacity: 0; transform: translateY(30px);}
-            to { opacity: 1; transform: translateY(0);}
-        }
-        @keyframes fadeOutSplash {
-            to { opacity: 0; pointer-events: none; }
-        }
-        /* Navbar */
-        header {
-            background: var(--nav-bg);
-            box-shadow: var(--shadow);
-            position: sticky;
-            top: 0;
-            z-index: 100;
-            backdrop-filter: blur(8px);
-        }
+        
+#splash {
+    position: fixed;
+    z-index: 9999;
+    inset: 0;
+    background: linear-gradient(135deg, #181622 0%, #22123a 100%);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-direction: column;
+    transition: opacity 0.7s cubic-bezier(.68,-0.55,.27,1.55);
+    opacity: 1;
+    pointer-events: all;
+}
+#splash-terminal {
+    background: rgba(20,16,32,0.98);
+    border-radius: 16px;
+    box-shadow: 0 8px 48px #7c3aed44;
+    padding: 48px 38px 38px 38px;
+    min-width: 340px;
+    max-width: 90vw;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 1.25em;
+    color: var(--code-green);
+    border: 2px solid var(--code-blue);
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    position: relative;
+    overflow: hidden;
+}
+.splash-line {
+    display: flex;
+    align-items: center;
+    min-height: 1.5em;
+}
+.splash-prompt {
+    color: var(--accent2);
+    margin-right: 8px;
+    font-weight: bold;
+}
+.splash-comment {
+    color: var(--text-muted);
+    font-style: italic;
+    margin-left: 8px;
+}
+.splash-cursor {
+    display: inline-block;
+    width: 1ch;
+    color: var(--code-cursor);
+    animation: blink-cursor 1s steps(2, start) infinite;
+    margin-left: 2px;
+}
+@keyframes blink-cursor {
+    0%, 100% { opacity: 1; }
+    50% { opacity: 0; }
+}
+.splash-fadein {
+    transition: opacity 0.7s cubic-bezier(.68,-0.55,.27,1.55);
+}
+.splash-loading-text {
+    color: var(--accent3);
+    margin-left: 8px;
+    font-weight: bold;
+    letter-spacing: 1px;
+}
+.splash-dot {
+    opacity: 0.2;
+    animation: splash-dot-fade 1.2s infinite;
+}
+.splash-dot:nth-child(2) { animation-delay: 0.3s; }
+.splash-dot:nth-child(3) { animation-delay: 0.6s; }
+@keyframes splash-dot-fade {
+    0%, 80%, 100% { opacity: 0.2; }
+    40% { opacity: 1; }
+}
+header {
+    position: sticky;
+    top: 0;
+    z-index: 100;
+    background: var(--nav-bg);
+    box-shadow: var(--shadow);
+}
         .navbar {
             display: flex;
             align-items: center;
@@ -144,78 +181,117 @@ body {
             text-shadow: 0 2px 16px #7c3aed44;
             transform: rotateY(-8deg);
         }
-        nav.tabs {
-            display: flex;
-            gap: 10px;
-            align-items: flex-end;
-            position: relative;
-            z-index: 2;
-        }
-        nav.tabs button {
-            background: var(--glass);
-            border: none;
-            color: var(--text-muted);
-            font-size: 1.08em;
-            font-family: 'Montserrat', sans-serif;
-            padding: 18px 22px 14px 22px;
-            cursor: pointer;
-            border-bottom: 3px solid transparent;
-            border-top: none;
-            border-left: none;
-            border-right: none;
-            transition: 
-                color 0.2s, 
-                border-color 0.2s, 
-                background 0.2s, 
-                box-shadow 0.2s, 
-                transform 0.2s,
-                border-radius 0.2s;
-            border-radius: 12px 12px 0 0;
-            outline: none;
-            position: relative;
-            box-shadow: 0 2px 12px #7c3aed22;
-            backdrop-filter: blur(2px);
-            min-width: 120px;
-            margin-bottom: 0;
-            z-index: 1;
-            overflow: visible;
-        }
-        nav.tabs button.active, nav.tabs button:hover {
-            color: var(--nav-active);
-            border-bottom: 3px solid var(--nav-active);
-            background: #22123a;
-            box-shadow: 0 4px 24px #a259f733;
-            transform: translateY(-2px) scale(1.04) rotateY(-4deg);
-            border-radius: 18px 18px 0 0;
-            z-index: 2;
-        }
-        nav.tabs button.active::after {
-            content: none; /* Remove the underline from the button itself */
-        }
-        /* Tab underline animation */
-        .tab-underline {
-            position: absolute;
-            bottom: 0;
-            left: 0;
-            height: 5px;
-            background: linear-gradient(90deg, var(--accent2), var(--accent3));
-            border-radius: 2px;
-            transition: all 0.35s cubic-bezier(.68,-0.55,.27,1.55);
-            z-index: 0;
-            pointer-events: none;
-        }
-        /* General styles */
-main {
-    flex: 1 0 auto;
+
+nav.tabs {
     display: flex;
-    flex-direction: column;
+    gap: 0;
+    align-items: flex-end;
+    position: relative;
+    z-index: 2;
+    background: #181622;
+    border-bottom: 2px solid var(--code-blue);
+    padding: 0 8px;
+    box-shadow: 0 2px 16px #7c3aed22;
+    font-family: 'JetBrains Mono', monospace;
+    min-height: 54px;
+    user-select: none;
+    border-radius: 12px 12px 0 0;
+     overflow-x: auto;
+    overflow-y: hidden; 
+    min-width: 0;
+    scrollbar-width: none; 
+}
+nav.tabs button {
+    background: none;
+    border: none;
+    color: var(--text-muted);
+    font-size: 1.08em;
+    font-family: 'JetBrains Mono', monospace;
+    padding: 0 32px;
+    height: 54px;
+    cursor: pointer;
+    border-bottom: 2.5px solid transparent;
+    border-radius: 12px 12px 0 0;
+    margin: 0 2px;
+    position: relative;
+    transition: 
+        color 0.18s,
+        background 0.18s,
+        border-color 0.18s,
+        transform 0.18s;
+    outline: none;
+    z-index: 1;
+    letter-spacing: 0.5px;
+    box-shadow: none;
+}
+nav.tabs button.active,
+nav.tabs button:focus,
+nav.tabs button:hover {
+    color: var(--code-blue);
+    background: #232136;
+    border-bottom: 2.5px solid var(--accent2);
+    z-index: 2;
+    transform: translateY(-2px) scale(1.04);
+}
+nav.tabs button.active {
+    color: var(--accent2);
+    background: #232136;
+    border-bottom: 2.5px solid var(--accent2);
+    font-weight: bold;
+    box-shadow: 0 4px 24px #a259f733;
+}
+nav.tabs button:not(.active):hover {
+    color: var(--accent3);
+    background: #22123a;
+    border-bottom: 2.5px solid var(--accent3);
+}
+nav.tabs::-webkit-scrollbar {
+    display: none; 
+}
+.tab-underline {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    height: 2.5px;
+    background: linear-gradient(90deg, var(--accent2), var(--accent3));
+    border-radius: 2px;
+    transition: all 0.35s cubic-bezier(.68,-0.55,.27,1.55);
+    z-index: 0;
+    pointer-events: none;
+    box-shadow: 0 2px 12px #7c3aed44;
+}
+@media (max-width: 700px) {
+    nav.tabs button {
+        padding: 0 14px;
+        font-size: 0.98em;
+        height: 44px;
+    }
+    nav.tabs {
+        min-height: 44px;
+        border-radius: 8px 8px 0 0;
+    }
+}
+        
+main {
+    flex: 1 1 auto;
+    overflow-y: auto;
+    overflow-x: hidden;
+    min-height: 0;
     max-width: 1200px;
-    margin: 48px auto 0 auto;
-    padding: 0 18px;
+    margin: 0 auto;
+    padding: 0 18px 24px 18px;
     width: 100%;
     z-index: 1;
     position: relative;
+    background: transparent;
 }
+main::-webkit-scrollbar {
+    display: none;
+}
+main {
+    scrollbar-width: none; 
+}
+
         .tab-content {
             display: none;
             animation: fadeIn 0.7s;
@@ -228,11 +304,13 @@ main {
             to { opacity: 1; transform: translateY(0) scale(1) rotateY(0);}
         }
         .card {
+            border: 1.5px dashed var(--code-blue);
             background: var(--card-bg);
+            box-shadow: 0 4px 32px #23213655;
+            font-family: 'JetBrains Mono', monospace;
             border-radius: 18px;
             padding: 40px 36px;
             margin-bottom: 36px;
-            box-shadow: var(--shadow);
             animation: fadeInCard 1s;
             position: relative;
             overflow: hidden;
@@ -260,29 +338,29 @@ main {
         }
         .btn {
             display: inline-block;
-            background: linear-gradient(90deg, var(--btn-bg), var(--btn-hover));
-            color: #fff;
+            background: var(--btn-bg);
+            color: var(--code-green);
+            border: 1.5px solid var(--code-green);
+            border-radius: 6px;
             padding: 14px 32px;
-            border-radius: 8px;
             text-decoration: none;
             font-weight: bold;
             margin-top: 16px;
             font-size: 1.08em;
             box-shadow: 0 2px 8px #0003;
-            border: none;
-            transition: background 0.2s, color 0.2s, transform 0.2s, box-shadow 0.2s;
+            transition: background 0.2s, color 0.2s, border-color 0.2s, transform 0.2s;
             font-family: 'Montserrat', sans-serif;
             filter: drop-shadow(0 2px 8px #7c3aed44);
         }
         .btn:hover {
-            background: linear-gradient(90deg, var(--btn-hover), var(--btn-bg));
-            color: #fff;
-            transform: scale(1.06);
-            box-shadow: 0 4px 24px #a259f733;
+            background: #181622;
+            color: var(--code-blue);
+            border-color: var(--code-blue);
+            transform: scale(1.04);
         }
         .btn.copy-btn {
             background: linear-gradient(90deg, var(--success), var(--accent2));
-            color: #181024;
+            color: #ffffff;
             margin-left: 10px;
             font-size: 0.98em;
             padding: 10px 18px;
@@ -303,12 +381,11 @@ main {
             gap: 22px;
         }
         .script-card {
-            background: #22123a;
-            border-radius: 14px;
-            padding: 26px 20px;
-            flex: 1 1 260px;
-            min-width: 220px;
-            box-shadow: 0 2px 8px #0002;
+            background: #181622;
+            border: 1.5px dashed var(--code-blue);
+            font-family: 'JetBrains Mono', monospace;
+            color: var(--code-green);
+            box-shadow: 0 2px 8px #23213644;
             cursor: pointer;
             transition: transform 0.18s, box-shadow 0.18s;
             position: relative;
@@ -347,7 +424,7 @@ main {
         .search-bar:focus {
             box-shadow: 0 4px 16px #a259f733;
         }
-        /* Modal */
+        
         .modal-bg {
             display: none;
             position: fixed;
@@ -367,16 +444,16 @@ main {
             to { opacity: 1;}
         }
         .modal {
-            background: #22123a;
+            background: #181622;
+            border: 1.5px solid var(--accent2);
+            font-family: 'JetBrains Mono', monospace;
+            color: var(--code-green);
             border-radius: 22px;
             padding: 44px 38px 32px 38px;
             min-width: 320px;
             max-width: 98vw;
             max-height: 90vh;
             box-shadow: 0 8px 48px #000a;
-            color: var(--text);
-            font-family: 'JetBrains Mono', monospace;
-            position: relative;
             animation: modalPopIn 0.5s cubic-bezier(.68,-0.55,.27,1.55);
             transform-style: preserve-3d;
         }
@@ -437,73 +514,107 @@ main {
         .modal .copy-status.visible {
             opacity: 1;
         }
-        /* Key System Card */
-        .key-card {
-            background: linear-gradient(120deg, #22123a 80%, #7c3aed22 100%);
-            border-radius: 18px;
-            box-shadow: 0 4px 32px #a259f733;
-            padding: 32px 28px;
-            margin-bottom: 36px;
-            display: flex;
-            flex-direction: column;
-            align-items: flex-start;
-            gap: 18px;
-            transform: rotateY(-4deg) scale(1.01);
-        }
-        .key-card h3 {
-            color: var(--accent3);
-            margin: 0 0 8px 0;
-            font-family: 'JetBrains Mono', monospace;
-        }
-        .key-input-row {
-            display: flex;
-            gap: 10px;
-            align-items: center;
-        }
-        .key-input {
-            padding: 10px 18px;
-            border-radius: 8px;
-            border: none;
-            background: #2a1740;
-            color: var(--text);
-            font-size: 1.08em;
-            font-family: 'JetBrains Mono', monospace;
-            box-shadow: 0 2px 8px #0002;
-            outline: none;
-            transition: box-shadow 0.2s;
-        }
-        .key-input:focus {
-            box-shadow: 0 4px 16px #a259f733;
-        }
-        .key-status {
-            font-size: 1em;
-            margin-left: 10px;
-            color: var(--success);
-            opacity: 0;
-            transition: opacity 0.3s;
-            font-family: 'Montserrat', sans-serif;
-        }
-        .key-status.visible {
-            opacity: 1;
-        }
-        .key-error {
-            color: var(--danger);
-        }
-        /* Footer */
-footer {
-    flex-shrink: 0;
-    background: var(--footer-bg);
-    text-align: center;
-    color: #bda6e7;
-    margin: 0;
-    padding: 28px 0 18px 0;
+        
+ .key-card {
+    background: #181622;
+    border: 1.5px dashed var(--code-blue);
+    border-radius: 18px;
+    box-shadow: 0 4px 32px #23213655;
+    padding: 40px 36px;
+    margin-bottom: 36px;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 18px;
+    font-family: 'JetBrains Mono', monospace;
+    animation: fadeInCard 1s;
+    position: relative;
+    overflow: hidden;
+    transform-style: preserve-3d;
+    transition: box-shadow 0.3s, transform 0.3s;
+}
+.key-card h3 {
+    color: var(--accent2);
+    margin: 0 0 8px 0;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 1.2em;
+    letter-spacing: 1px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+.key-input-row {
+    display: flex;
+    gap: 10px;
+    align-items: center;
+    width: 100%;
+}
+.key-input {
+    padding: 10px 18px;
+    border-radius: 8px;
+    border: 1.5px solid var(--code-blue);
+    background: #181024;
+    color: var(--code-green);
     font-size: 1.08em;
+    font-family: 'JetBrains Mono', monospace;
+    box-shadow: 0 2px 8px #0002;
+    outline: none;
+    transition: border-color 0.2s, color 0.2s, box-shadow 0.2s;
+    min-width: 180px;
+}
+.key-input:focus {
+    border-color: var(--accent4);
+    color: var(--accent4);
+    box-shadow: 0 4px 16px #a259f733;
+}
+.key-status {
+    font-size: 1em;
+    margin-left: 10px;
+    color: var(--success);
+    opacity: 0;
+    transition: opacity 0.3s;
+    font-family: 'JetBrains Mono', monospace;
+}
+.key-status.visible {
+    opacity: 1;
+}
+.key-status.key-error {
+    color: var(--accent4);
+}
+
+.btn, .btn.copy-btn {
+    font-family: 'JetBrains Mono', monospace;
+    background: var(--btn-bg);
+    color: var(--code-green);
+    border: 1.5px solid var(--code-green);
+    border-radius: 6px;
+    box-shadow: none;
+    text-shadow: none;
+    transition: background 0.2s, color 0.2s, border-color 0.2s, transform 0.2s;
+}
+.btn:hover, .btn.copy-btn:hover {
+    background: #181622;
+    color: var(--code-blue);
+    border-color: var(--code-blue);
+    transform: scale(1.04);
+}
+        
+footer {
+    position: sticky;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+    z-index: 10;
+    background: #181622;
+    color: var(--code-green);
+    font-family: 'JetBrains Mono', monospace;
+    border-top: 1.5px dashed var(--code-blue);
     letter-spacing: 1px;
     box-shadow: 0 -2px 24px #0004;
-    width: 100%;
-    position: relative;
+    flex-shrink: 0;
 }
-        /* Devs/Contact Cards */
+
+        
         .dev-list {
             display: flex;
             flex-wrap: wrap;
@@ -562,7 +673,7 @@ footer {
             color: var(--accent2);
             transform: scale(1.15);
         }
-        /* Special Thanks */
+        
         .thanks-section {
             background: var(--thanks-bg);
             border-radius: 14px;
@@ -648,9 +759,11 @@ footer {
             flex-wrap: wrap;
         }
         .news-card {
-            background: #191526;
-            border-radius: 12px;
-            box-shadow: 0 2px 8px #0004;
+            background: #181622;
+            border: 1.5px dashed var(--code-blue);
+            font-family: 'JetBrains Mono', monospace;
+            color: var(--code-green);
+            box-shadow: 0 2px 8px #23213644;
             padding: 18px 16px 14px 16px;
             min-width: 220px;
             flex: 1 1 260px;
@@ -716,7 +829,7 @@ footer {
             color: #fff;
             transform: scale(1.06);
         }
-        /* News Modal */
+        
         .news-modal-bg {
             display: none;
             position: fixed;
@@ -772,7 +885,7 @@ footer {
             font-size: 1.08em;
             margin-bottom: 0;
         }
-        /* All News Modal List */
+        
         .all-news-list {
             display: flex;
             flex-direction: column;
@@ -806,8 +919,9 @@ footer {
             color: var(--text);
             font-size: 1em;
         }
-        /* Contact Revamp */
+        
         .contact-card {
+            margin: 48px auto 36px auto; 
             background: var(--card-bg);
             border-radius: 18px;
             box-shadow: 0 4px 32px #a259f733;
@@ -818,6 +932,8 @@ footer {
             align-items: flex-start;
             gap: 18px;
             animation: fadeInCard 1s;
+            max-width: 600px;
+            width: 100%;
         }
         .contact-methods {
             display: flex;
@@ -826,8 +942,11 @@ footer {
             margin-top: 10px;
         }
         .contact-method {
-            background: #191526;
-            border-radius: 10px;
+            background: #181622;
+            border: 1.5px dashed var(--code-blue);
+            font-family: 'JetBrains Mono', monospace;
+            color: var(--code-green);
+            border-radius: 6px;
             padding: 18px 20px;
             min-width: 220px;
             flex: 1 1 260px;
@@ -836,7 +955,6 @@ footer {
             align-items: center;
             gap: 14px;
             font-size: 1.1em;
-            color: var(--text);
             transition: box-shadow 0.18s, transform 0.18s;
         }
         .contact-method i {
@@ -856,19 +974,41 @@ footer {
             font-size: 1em;
             margin-top: 8px;
         }
-        
+        .main-greeting {
+    font-family: 'JetBrains Mono', monospace;
+    color: var(--code-green);
+    font-size: 1.25em;
+    margin: 32px 0 18px 0;
+    letter-spacing: 1px;
+    min-height: 2.2em;
+    white-space: pre;
+    display: flex;
+    align-items: center;
+}
+.main-greeting .greet-cursor {
+    display: inline-block;
+    width: 1ch;
+    color: var(--code-cursor);
+    animation: blink-cursor 1s steps(2, start) infinite;
+    margin-left: 2px;
+}
     </style>
-   <!-- Font Awesome for social icons -->
+   
     <script src="https://kit.fontawesome.com/2d3e5c5e5f.js" crossorigin="anonymous"></script>
 </head>
 <body>
-    <!-- Splash Screen -->
-    <div id="splash">
-        <div id="splash-logo">Shadow Scripts</div>
-        <div id="splash-sub">Roblox Scripts</div>
-        <div id="splash-sub">That came from the</div>
-        <div id="splash-sub">Darkness.</div>
+    
+<div id="splash">
+    <div id="splash-terminal">
+        <div class="splash-line"><span class="splash-prompt">&gt;</span> <span id="splash-type"></span><span class="splash-cursor">|</span></div>
+        <div class="splash-line splash-fadein" id="splash-subline" style="opacity:0;">
+            <span class="splash-comment">// Roblox scripts from the darkness</span>
+        </div>
+        <div class="splash-line splash-fadein" id="splash-loading" style="opacity:0;">
+            <span class="splash-loading-text">Loading<span class="splash-dot">.</span><span class="splash-dot">.</span><span class="splash-dot">.</span></span>
+        </div>
     </div>
+</div>
     <div id="page-content">
         <header>
             <div class="navbar">
@@ -890,6 +1030,7 @@ footer {
         </header>
         <main>
             <section id="main" class="tab-content active">
+                <div class="main-greeting" id="mainGreeting"></div>
                 <div class="card">
                     <h2>Main</h2>
                     <p>
@@ -905,11 +1046,12 @@ footer {
                         <button class="news-all-btn" id="showAllNewsBtn">Display All News</button>
                     </div>
                     <div class="news-list" id="newsList">
-                        <!-- News cards will be injected here -->
+                        
                     </div>
                 </div>
             </section>
             <section id="scripts" class="tab-content">
+                <h2> </h2>
                 <div class="card">
                     <h2>All Scripts</h2>
                     <input class="search-bar" id="scriptSearch" type="text" placeholder="Search scripts...">
@@ -918,11 +1060,12 @@ footer {
                             <h3>Piggy Script</h3>
                             <p>ESP, item grab, VIP server tools, and more for Piggy.</p>
                         </div>
-                        <!-- Add more script cards here as you make more scripts -->
+                        
                     </div>
                 </div>
             </section>
             <section id="key" class="tab-content">
+                                <h2> </h2>
                 <div class="key-card">
                     <h3><i class="fas fa-key"></i> Grab Your Script Key</h3>
                     <div class="key-input-row">
@@ -938,6 +1081,7 @@ footer {
                 </div>
             </section>
             <section id="devs" class="tab-content">
+                                <h2> </h2>
                 <div class="card">
                     <h2>Developers</h2>
                     <div class="dev-list">
@@ -945,21 +1089,14 @@ footer {
                             <div class="dev-avatar"><i class="fas fa-user-astronaut"></i></div>
                             <h4>Shadow Slime</h4>
                             <p>Luau / Lua Scripter</p>
-                            <div class="dev-socials">
-                                <a href="https://github.com/yourusername" target="_blank" title="GitHub"><i class="fab fa-github"></i></a>
-                            </div>
                         </div>
                         <div class="dev-card">
                             <div class="dev-avatar"><i class="fas fa-user-ninja"></i></div>
                             <h4>Golden Soul</h4>
                             <p>Luau / Lua Scripter</p>
-                            <div class="dev-socials">
-                                <a href="https://github.com/anotherdev" target="_blank" title="GitHub"><i class="fab fa-github"></i></a>
-                            </div>
                         </div>
                     </div>
-                        <!-- Add more devs as needed -->
-                    </div>
+                        
                     <div class="thanks-section">
                         <h3>Special Thanks</h3>
                         <div class="thanks-list">
@@ -978,48 +1115,48 @@ footer {
                                 <span>RegularVynixu</span>
                                 <div style="font-size:0.95em;color:var(--text-muted);margin-top:4px;">Discord Inviter</div>
                             </div>
-                            <!-- Add more thanks as needed -->
+                            
                         </div>
                     </div>
                 </div>
             </section>
             <section id="contact" class="tab-content">
-                <div class="contact-card">
-                    <h2>Contact & Support</h2>
-                    <div class="contact-methods">
-                        <div class="contact-method">
-                            <i class="fab fa-discord"></i>
-                            <div>
-                                <div>Discord</div>
-                                <a href="https://discord.gg/74QcHdje" target="_blank">discord.gg/74QcHdje</a>
-                            </div>
-                        </div>
-                        <div class="contact-method">
-                            <i class="fas fa-envelope"></i>
-                            <div>
-                                <div>Email</div>
-                                <a href="mailto:shadowscriptsroblox@gmail.com">shadowscriptsroblox@gmail.com</a>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="contact-desc">
-                        For business, support, or inquiries, reach out via Discord or email.<br>
-                        We usually respond within 24 hours.<br>
-                        <span style="color:var(--accent4);">Please do not send spam or unrelated requests.</span>
-                    </div>
+                                <h2> </h2>
+    <div class="card">
+        <h2>Contact & Support</h2>
+        <div class="contact-methods">
+            <div class="contact-method">
+                <i class="fab fa-discord"></i>
+                <div>
+                    <div>Discord</div>
+                    <a href="https://discord.gg/74QcHdje" target="_blank">discord.gg/74QcHdje</a>
                 </div>
-            </section>
+            </div>
+            <div class="contact-method">
+                <i class="fas fa-envelope"></i>
+                <div>
+                    <div>Email</div>
+                    <a href="mailto:shadowscriptsroblox@gmail.com">shadowscriptsroblox@gmail.com</a>
+                </div>
+            </div>
+        </div>
+        <div class="contact-desc">
+            For business, support, or inquiries, reach out via Discord or email.<br>
+            We usually respond within 24 hours.<br>
+            <span style="color:var(--accent4);">Please do not send spam or unrelated requests.</span>
+        </div>
+    </div>
+</section>
             <section id="discord" class="tab-content">
+                                <h2> </h2>
                 <div class="card">
                     <h2>Join Our Discord</h2>
                     <p>
                         Get support, updates, and chat with the Shadow Scripts community!
                     </p>
                     <a class="btn" href="https://discord.gg/74QcHdje" target="_blank">Join Discord</a>
-                    <!-- Optionally embed Discord widget below -->
-                    <!--
-                    <iframe class="discord-widget" src="https://discord.com/widget?id=YOUR_SERVER_ID&theme=dark" allowtransparency="true"></iframe>
-                    -->
+                    
+                    
                 </div>
             </section>
         </main>
@@ -1027,7 +1164,7 @@ footer {
     <footer>
         &copy; 2025 Shadow Scripts. Not affiliated with Roblox Corporation.
     </footer>
-    <!-- Modal for script info -->
+    
     <div class="modal-bg" id="scriptModalBg">
         <div class="modal" id="scriptModal">
             <button class="modal-close" id="modalCloseBtn" title="Close">&times;</button>
@@ -1044,13 +1181,13 @@ loadstring(game:HttpGet("https://raw.githubusercontent.com/yourusername/ShadowSc
             <a class="btn" href="https://github.com/yourusername/ShadowScripts" target="_blank" style="margin-left:10px;">View on GitHub</a>
         </div>
     </div>
-    <!-- News Modals -->
+    
     <div class="news-modal-bg" id="allNewsModalBg">
         <div class="news-modal" id="allNewsModal">
             <button class="news-modal-close" id="closeAllNewsModal" title="Close">&times;</button>
             <h2>All News</h2>
             <div class="all-news-list" id="allNewsList">
-                <!-- All news items will be injected here -->
+                
             </div>
         </div>
     </div>
@@ -1062,20 +1199,42 @@ loadstring(game:HttpGet("https://raw.githubusercontent.com/yourusername/ShadowSc
             <div class="news-full" id="singleNewsFull"></div>
         </div>
     </div>
-    <script>
-        // Splash screen logic
-        window.addEventListener('DOMContentLoaded', function() {
-            setTimeout(function() {
-                document.getElementById('splash').classList.add('splash-fade');
-                document.getElementById('splash').addEventListener('transitionend', function handler() {
-                    document.getElementById('splash').style.display = 'none';
-                    document.body.style.overflow = '';
-                    document.getElementById('splash').removeEventListener('transitionend', handler);
-                });
-            }, 2200);
-        });
+   <script>
 
-        // News Data (replace/add as needed)
+const splashText = "Shadow Scripts";
+const splashTypeElem = document.getElementById('splash-type');
+const splashSubline = document.getElementById('splash-subline');
+const splashLoading = document.getElementById('splash-loading');
+let splashIdx = 0;
+
+function hideSplash() {
+    const splash = document.getElementById('splash');
+    splash.style.opacity = 0;
+    splash.style.pointerEvents = 'none';
+    setTimeout(() => {
+        splash.style.display = 'none';
+        document.body.style.overflow = ''; 
+    }, 800); 
+}
+
+function typeSplash() {
+    if (splashIdx <= splashText.length) {
+        splashTypeElem.textContent = splashText.slice(0, splashIdx);
+        splashIdx++;
+        setTimeout(typeSplash, 80);
+    } else {
+        setTimeout(() => {
+            splashSubline.style.opacity = 1;
+            setTimeout(() => {
+                splashLoading.style.opacity = 1;
+
+                setTimeout(hideSplash, 1200); 
+            }, 500);
+        }, 350);
+    }
+}
+typeSplash();
+
     const newsData = [
         {
             title: "Piggy 1.0 Script Released",
@@ -1104,7 +1263,6 @@ loadstring(game:HttpGet("https://raw.githubusercontent.com/yourusername/ShadowSc
         }
     ];
 
-        // Render latest 3 news
         function renderLatestNews() {
             const newsList = document.getElementById('newsList');
             newsList.innerHTML = '';
@@ -1123,7 +1281,6 @@ loadstring(game:HttpGet("https://raw.githubusercontent.com/yourusername/ShadowSc
         }
         renderLatestNews();
 
-        // News modal logic
         const allNewsModalBg = document.getElementById('allNewsModalBg');
         const allNewsModal = document.getElementById('allNewsModal');
         const showAllNewsBtn = document.getElementById('showAllNewsBtn');
@@ -1137,7 +1294,6 @@ loadstring(game:HttpGet("https://raw.githubusercontent.com/yourusername/ShadowSc
         const singleNewsDate = document.getElementById('singleNewsDate');
         const singleNewsFull = document.getElementById('singleNewsFull');
 
-        // Show all news modal
         showAllNewsBtn.addEventListener('click', function() {
             allNewsList.innerHTML = '';
             newsData.forEach((news, idx) => {
@@ -1160,7 +1316,6 @@ loadstring(game:HttpGet("https://raw.githubusercontent.com/yourusername/ShadowSc
             if (e.target === allNewsModalBg) allNewsModalBg.classList.remove('active');
         });
 
-        // Show single news modal
         function showSingleNews(idx) {
             const news = newsData[idx];
             singleNewsTitle.textContent = news.title;
@@ -1175,7 +1330,6 @@ loadstring(game:HttpGet("https://raw.githubusercontent.com/yourusername/ShadowSc
             if (e.target === singleNewsModalBg) singleNewsModalBg.classList.remove('active');
         });
 
-        // Delegate click for news cards and learn more buttons
         document.getElementById('newsList').addEventListener('click', function(e) {
             let idx = null;
             if (e.target.classList.contains('news-learn')) {
@@ -1187,7 +1341,7 @@ loadstring(game:HttpGet("https://raw.githubusercontent.com/yourusername/ShadowSc
             }
             if (idx !== null) showSingleNews(idx);
         });
-        // Delegate click for all news modal
+
         allNewsList.addEventListener('click', function(e) {
             let idx = null;
             if (e.target.classList.contains('all-news-item')) {
@@ -1201,8 +1355,6 @@ loadstring(game:HttpGet("https://raw.githubusercontent.com/yourusername/ShadowSc
             }
         });
 
-        // ...rest of your script (tab system, modal, key system, etc)...
-        // Tab switching logic with animated underline
         const tabButtons = Array.from(document.querySelectorAll('nav.tabs button'));
         const tabContents = document.querySelectorAll('.tab-content');
         const tabsNav = document.querySelector('nav.tabs');
@@ -1243,7 +1395,6 @@ loadstring(game:HttpGet("https://raw.githubusercontent.com/yourusername/ShadowSc
             if (activeBtn) moveUnderline(activeBtn);
         });
 
-        // Script search logic
         document.getElementById('scriptSearch').addEventListener('input', function() {
             const val = this.value.toLowerCase();
             document.querySelectorAll('.script-card').forEach(card => {
@@ -1251,13 +1402,12 @@ loadstring(game:HttpGet("https://raw.githubusercontent.com/yourusername/ShadowSc
             });
         });
 
-        // Modal logic for scripts
         const scriptModalBg = document.getElementById('scriptModalBg');
         const scriptModal = document.getElementById('scriptModal');
         const modalCloseBtn = document.getElementById('modalCloseBtn');
         const copyScriptBtn = document.getElementById('copyScriptBtn');
         const copyStatus = document.getElementById('copyStatus');
-        let currentScript = `// Loading Piggy Script...
+        let currentScript = `
 loadstring(game:HttpGet("https://raw.githubusercontent.com/yourusername/ShadowScripts/main/Piggy.lua"))()`;
 
         document.querySelectorAll('.script-card').forEach(card => {
@@ -1286,7 +1436,6 @@ loadstring(game:HttpGet("https://raw.githubusercontent.com/yourusername/ShadowSc
             }
         });
 
-        // Copy script to clipboard
         copyScriptBtn.addEventListener('click', function() {
             const scriptText = document.getElementById('modalScript').innerText;
             navigator.clipboard.writeText(scriptText).then(function() {
@@ -1299,7 +1448,6 @@ loadstring(game:HttpGet("https://raw.githubusercontent.com/yourusername/ShadowSc
             });
         });
 
-        // Key system logic
         const getKeyBtn = document.getElementById('getKeyBtn');
         const copyKeyBtn = document.getElementById('copyKeyBtn');
         const keyInput = document.getElementById('keyInput');
@@ -1349,6 +1497,41 @@ loadstring(game:HttpGet("https://raw.githubusercontent.com/yourusername/ShadowSc
                 window.location.hash = btn.getAttribute('data-tab');
             });
         });
+        function getGreeting() {
+    const hour = new Date().getHours();
+    if (hour >= 5 && hour < 12) return "Good morning";
+    if (hour >= 12 && hour < 18) return "Good afternoon";
+    if (hour >= 18 && hour < 22) return "Good evening";
+    return "Good night";
+}
+
+function typeGreeting() {
+    const greetElem = document.getElementById('mainGreeting');
+    if (!greetElem) return;
+    const greeting = getGreeting() + ", there!";
+    let idx = 0;
+    greetElem.innerHTML = '<span id="greetText"></span><span class="greet-cursor">|</span>';
+    const greetTextElem = document.getElementById('greetText');
+    function type() {
+        greetTextElem.textContent = greeting.slice(0, idx);
+        idx++;
+        if (idx <= greeting.length) setTimeout(type, 55);
+    }
+    type();
+}
+
+function showGreetingIfMain() {
+    if (document.getElementById('main').classList.contains('active')) {
+        typeGreeting();
+    }
+}
+setTimeout(showGreetingIfMain, 2200); 
+
+document.querySelector('nav.tabs').addEventListener('click', function(e) {
+    if (e.target.matches('button[data-tab="main"]')) {
+        setTimeout(typeGreeting, 200);
+    }
+});
     </script>
 </body>
 </html>
