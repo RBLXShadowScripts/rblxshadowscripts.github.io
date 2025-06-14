@@ -55,6 +55,20 @@ function SplashScreen:Show(title, imageId, soundId, duration)
     borderStroke.Transparency = 0.2
     borderStroke.Parent = border
 
+    -- Background image (new feature)
+    local bgImage
+    if imageId and tostring(imageId) ~= "" then
+        bgImage = Instance.new("ImageLabel")
+        bgImage.BackgroundTransparency = 1
+        bgImage.Image = "rbxassetid://" .. tostring(imageId)
+        bgImage.ImageTransparency = 0.7
+        bgImage.Size = UDim2.new(1, 0, 1, 0)
+        bgImage.Position = UDim2.new(0, 0, 0, 0)
+        bgImage.ZIndex = 1
+        bgImage.ScaleType = Enum.ScaleType.Crop
+        bgImage.Parent = frame
+    end
+
     -- Title
     local titleLabel = Instance.new("TextLabel")
     titleLabel.Text = "<b>" .. (title or "Splash") .. "</b>"
@@ -83,7 +97,7 @@ function SplashScreen:Show(title, imageId, soundId, duration)
     underlineCorner.CornerRadius = UDim.new(1, 0)
     underlineCorner.Parent = underline
 
-    -- Optional image
+    -- Optional image (main logo)
     local image
     if imageId and tostring(imageId) ~= "" then
         image = Instance.new("ImageLabel")
@@ -108,18 +122,53 @@ function SplashScreen:Show(title, imageId, soundId, duration)
         glow.Parent = image
     end
 
-    -- Scripter "matrix" effect
-    local matrix = Instance.new("TextLabel")
-    matrix.Text = ""
-    matrix.Font = Enum.Font.Code
-    matrix.TextSize = 18
-    matrix.TextColor3 = Color3.fromRGB(80, 255, 180)
+    -- Scripter "matrix" effect (now animated vertically)
+    local matrix = Instance.new("Frame")
     matrix.BackgroundTransparency = 1
     matrix.Size = UDim2.new(1, 0, 1, 0)
     matrix.Position = UDim2.new(0, 0, 0, 0)
-    matrix.TextTransparency = 1
     matrix.ZIndex = 2
+    matrix.ClipsDescendants = true
     matrix.Parent = frame
+
+    local matrixCharset = {"0","1","{","}","[","]","$","#","@","%","=","+","-","*","/","\\","|"}
+    local matrixLabels = {}
+    local matrixLines = 8
+    local matrixColumns = 30
+
+    for i = 1, matrixLines do
+        local label = Instance.new("TextLabel")
+        label.Text = ""
+        label.Font = Enum.Font.Code
+        label.TextSize = 18
+        label.TextColor3 = Color3.fromRGB(80, 255, 180)
+        label.BackgroundTransparency = 1
+        label.Size = UDim2.new(1, 0, 0, 18)
+        label.Position = UDim2.new(0, 0, 0, (i-1)*18)
+        label.TextTransparency = 0.7
+        label.ZIndex = 2
+        label.TextXAlignment = Enum.TextXAlignment.Left
+        label.Parent = matrix
+        matrixLabels[i] = label
+    end
+
+    local function randomMatrixLine(len)
+        local s = ""
+        for i = 1, len do
+            s = s .. matrixCharset[math.random(1, #matrixCharset)]
+        end
+        return s
+    end
+
+    local running = true
+    task.spawn(function()
+        while running do
+            for i, label in ipairs(matrixLabels) do
+                label.Text = randomMatrixLine(matrixColumns)
+            end
+            task.wait(0.08)
+        end
+    end)
 
     -- Optional sound
     local sound
@@ -139,24 +188,12 @@ function SplashScreen:Show(title, imageId, soundId, duration)
     if image then
         TweenService:Create(image, TweenInfo.new(0.7, Enum.EasingStyle.Quad), {ImageTransparency = 0}):Play()
     end
-    TweenService:Create(matrix, TweenInfo.new(0.7), {TextTransparency = 0.2}):Play()
-
-    -- Matrix animation
-    local matrixCharset = {"0","1","{","}","[","]","$","#","@","%","=","+","-","*","/","\\","|"}
-    local function randomMatrixLine(len)
-        local s = ""
-        for i = 1, len do
-            s = s .. matrixCharset[math.random(1, #matrixCharset)]
-        end
-        return s
+    if bgImage then
+        TweenService:Create(bgImage, TweenInfo.new(0.7), {ImageTransparency = 0.7}):Play()
     end
-    local running = true
-    task.spawn(function()
-        while running do
-            matrix.Text = randomMatrixLine(30)
-            task.wait(0.07)
-        end
-    end)
+    for _, label in ipairs(matrixLabels) do
+        TweenService:Create(label, TweenInfo.new(0.7), {TextTransparency = 0.7}):Play()
+    end
 
     -- Wait, then fade out and cleanup
     task.spawn(function()
@@ -166,9 +203,14 @@ function SplashScreen:Show(title, imageId, soundId, duration)
         TweenService:Create(titleLabel, TweenInfo.new(0.5), {TextTransparency = 1}):Play()
         TweenService:Create(underline, TweenInfo.new(0.5), {BackgroundTransparency = 1}):Play()
         TweenService:Create(borderStroke, TweenInfo.new(0.5), {Transparency = 1}):Play()
-        TweenService:Create(matrix, TweenInfo.new(0.5), {TextTransparency = 1}):Play()
         if image then
             TweenService:Create(image, TweenInfo.new(0.5), {ImageTransparency = 1}):Play()
+        end
+        if bgImage then
+            TweenService:Create(bgImage, TweenInfo.new(0.5), {ImageTransparency = 1}):Play()
+        end
+        for _, label in ipairs(matrixLabels) do
+            TweenService:Create(label, TweenInfo.new(0.5), {TextTransparency = 1}):Play()
         end
         TweenService:Create(shadow, TweenInfo.new(0.5), {ImageTransparency = 1}):Play()
         task.wait(0.5)
