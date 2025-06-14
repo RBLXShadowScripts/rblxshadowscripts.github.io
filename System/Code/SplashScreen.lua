@@ -40,20 +40,11 @@ function SplashScreen:Show(title, imageId, soundId, duration)
     corner.CornerRadius = UDim.new(0, 18)
     corner.Parent = frame
 
-    -- Neon border
-    local border = Instance.new("Frame")
-    border.Size = UDim2.new(1, 0, 1, 0)
-    border.Position = UDim2.new(0, 0, 0, 0)
-    border.BackgroundTransparency = 1
-    border.BorderSizePixel = 0
-    border.ZIndex = 2
-    border.Parent = frame
-
     local borderStroke = Instance.new("UIStroke")
     borderStroke.Thickness = 3
     borderStroke.Color = Color3.fromRGB(80, 255, 180)
     borderStroke.Transparency = 0.2
-    borderStroke.Parent = border
+    borderStroke.Parent = frame
 
     -- Background image (new feature)
     local bgImage
