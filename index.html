@@ -1170,15 +1170,15 @@ footer {
             <button class="modal-close" id="modalCloseBtn" title="Close">&times;</button>
             <h2 id="modalTitle">Piggy Script</h2>
             <ul class="info-list">
-                <li><strong>Supported Executors:</strong> Synapse X, Fluxus, KRNL, Electron</li>
+                <li><strong>Supported Executors:</strong> Swift (maybe others idk) </li>
                 <li><strong>Last Updated:</strong> June 2025</li>
-                <li><strong>Status:</strong> Working</li>
+                <li><strong>Status:</strong> Still in the Works</li>
             </ul>
             <pre id="modalScript">// zengy
 loadstring(game:HttpGet())()</pre>
             <button class="btn copy-btn" id="copyScriptBtn">Copy Script</button>
             <span class="copy-status" id="copyStatus">Copied!</span>
-            <a class="btn" href="https://github.com/yourusername/ShadowScripts" target="_blank" style="margin-left:10px;">View on GitHub</a>
+            <a class="btn" href="https://github.com/RBLXShadowScripts/rblxshadowscripts.github.io/blob/main/System/Scripts/Piggy/Script.lua" target="_blank" style="margin-left:10px;">View on GitHub</a>
         </div>
     </div>
     
@@ -1408,7 +1408,8 @@ typeSplash();
         const copyScriptBtn = document.getElementById('copyScriptBtn');
         const copyStatus = document.getElementById('copyStatus');
         let currentScript = `
-loadstring(game:HttpGet("https://raw.githubusercontent.com/yourusername/ShadowScripts/main/Piggy.lua"))()`;
+        -- // Still Wip.
+loadstring(game:HttpGet("https://rblxshadowscripts.github.io/System/Scripts/Piggy/Script.lua"))()`;
 
         document.querySelectorAll('.script-card').forEach(card => {
             card.addEventListener('click', function() {
